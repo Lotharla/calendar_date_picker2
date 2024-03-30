@@ -4,6 +4,7 @@
 
 import 'dart:math' as math;
 
+import 'package:week_of_year/week_of_year.dart';
 import 'package:calendar_date_picker2/calendar_date_picker2.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';

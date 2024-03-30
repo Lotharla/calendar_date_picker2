@@ -45,6 +45,9 @@ class CalendarDatePicker2Config {
     DatePickerMode? calendarViewMode,
     this.weekdayLabels,
     this.weekdayLabelTextStyle,
+    this.weekNumbers,
+    this.weekNumberLabel,
+    this.weekNumberTextStyle,
     this.firstDayOfWeek,
     this.controlsHeight,
     this.lastMonthIcon,
@@ -63,6 +66,7 @@ class CalendarDatePicker2Config {
     this.selectableDayPredicate,
     this.dayTextStylePredicate,
     this.dayBuilder,
+    this.weekBuilder,
     this.yearBuilder,
     this.disableModePicker,
     this.centerAlignModePicker,
@@ -103,6 +107,15 @@ class CalendarDatePicker2Config {
 
   /// Custom text style for weekday labels
   final TextStyle? weekdayLabelTextStyle;
+
+  /// Flag to show column of week numbers.
+  final bool? weekNumbers;
+
+  /// Custom text for weekNumber label
+  final String? weekNumberLabel;
+
+  /// Custom text style for weekNumber label
+  final TextStyle? weekNumberTextStyle;
 
   /// Index of the first day of week, where 0 points to Sunday, and 6 points to Saturday.
   final int? firstDayOfWeek;
@@ -162,6 +175,9 @@ class CalendarDatePicker2Config {
   /// Function to provide full control over day widget UI
   final CalendarDayBuilder? dayBuilder;
 
+  /// Function to provide full control over day widget UI
+  final CalendarDayBuilder? weekBuilder;
+
   /// Function to provide full control over year widget UI
   final CalendarYearBuilder? yearBuilder;
 
@@ -193,6 +209,9 @@ class CalendarDatePicker2Config {
     DatePickerMode? calendarViewMode,
     List<String>? weekdayLabels,
     TextStyle? weekdayLabelTextStyle,
+    bool? weekNumbers,
+    String? weekNumberLabel,
+    TextStyle? weekNumberTextStyle,
     int? firstDayOfWeek,
     double? controlsHeight,
     Widget? lastMonthIcon,
@@ -212,6 +231,7 @@ class CalendarDatePicker2Config {
     SelectableDayPredicate? selectableDayPredicate,
     CalendarDayTextStylePredicate? dayTextStylePredicate,
     CalendarDayBuilder? dayBuilder,
+    CalendarDayBuilder? weekBuilder,
     CalendarYearBuilder? yearBuilder,
     bool? disableModePicker,
     bool? centerAlignModePicker,
@@ -229,6 +249,10 @@ class CalendarDatePicker2Config {
       weekdayLabels: weekdayLabels ?? this.weekdayLabels,
       weekdayLabelTextStyle:
           weekdayLabelTextStyle ?? this.weekdayLabelTextStyle,
+      weekNumbers: weekNumbers ?? this.weekNumbers,
+      weekNumberLabel: weekNumberLabel ?? this.weekNumberLabel,
+      weekNumberTextStyle:
+          weekNumberTextStyle ?? this.weekNumberTextStyle,
       firstDayOfWeek: firstDayOfWeek ?? this.firstDayOfWeek,
       controlsHeight: controlsHeight ?? this.controlsHeight,
       lastMonthIcon: lastMonthIcon ?? this.lastMonthIcon,
@@ -254,6 +278,7 @@ class CalendarDatePicker2Config {
       dayTextStylePredicate:
           dayTextStylePredicate ?? this.dayTextStylePredicate,
       dayBuilder: dayBuilder ?? this.dayBuilder,
+      weekBuilder: weekBuilder ?? this.weekBuilder,
       yearBuilder: yearBuilder ?? this.yearBuilder,
       disableModePicker: disableModePicker ?? this.disableModePicker,
       centerAlignModePicker:
@@ -278,6 +303,9 @@ class CalendarDatePicker2WithActionButtonsConfig
     DatePickerMode? calendarViewMode,
     List<String>? weekdayLabels,
     TextStyle? weekdayLabelTextStyle,
+    bool? weekNumbers,
+    String? weekNumberLabel,
+    TextStyle? weekNumberTextStyle,
     int? firstDayOfWeek,
     double? controlsHeight,
     Widget? lastMonthIcon,
@@ -297,6 +325,7 @@ class CalendarDatePicker2WithActionButtonsConfig
     SelectableDayPredicate? selectableDayPredicate,
     CalendarDayTextStylePredicate? dayTextStylePredicate,
     CalendarDayBuilder? dayBuilder,
+    CalendarDayBuilder? weekBuilder,
     CalendarYearBuilder? yearBuilder,
     bool? disableModePicker,
     bool? centerAlignModePicker,
@@ -321,6 +350,9 @@ class CalendarDatePicker2WithActionButtonsConfig
           calendarViewMode: calendarViewMode,
           weekdayLabels: weekdayLabels,
           weekdayLabelTextStyle: weekdayLabelTextStyle,
+          weekNumbers: weekNumbers,
+          weekNumberLabel: weekNumberLabel,
+          weekNumberTextStyle: weekNumberTextStyle,
           firstDayOfWeek: firstDayOfWeek,
           controlsHeight: controlsHeight,
           lastMonthIcon: lastMonthIcon,
@@ -385,6 +417,9 @@ class CalendarDatePicker2WithActionButtonsConfig
     DatePickerMode? calendarViewMode,
     List<String>? weekdayLabels,
     TextStyle? weekdayLabelTextStyle,
+    bool? weekNumbers,
+    String? weekNumberLabel,
+    TextStyle? weekNumberTextStyle,
     int? firstDayOfWeek,
     double? controlsHeight,
     Widget? lastMonthIcon,
@@ -404,6 +439,7 @@ class CalendarDatePicker2WithActionButtonsConfig
     SelectableDayPredicate? selectableDayPredicate,
     CalendarDayTextStylePredicate? dayTextStylePredicate,
     CalendarDayBuilder? dayBuilder,
+    CalendarDayBuilder? weekBuilder,
     CalendarYearBuilder? yearBuilder,
     bool? disableModePicker,
     bool? centerAlignModePicker,
@@ -430,6 +466,10 @@ class CalendarDatePicker2WithActionButtonsConfig
       weekdayLabels: weekdayLabels ?? this.weekdayLabels,
       weekdayLabelTextStyle:
           weekdayLabelTextStyle ?? this.weekdayLabelTextStyle,
+      weekNumbers: weekNumbers ?? this.weekNumbers,
+      weekNumberLabel: weekNumberLabel ?? this.weekNumberLabel,
+      weekNumberTextStyle:
+          weekNumberTextStyle ?? this.weekNumberTextStyle,
       firstDayOfWeek: firstDayOfWeek ?? this.firstDayOfWeek,
       controlsHeight: controlsHeight ?? this.controlsHeight,
       lastMonthIcon: lastMonthIcon ?? this.lastMonthIcon,
@@ -455,6 +495,7 @@ class CalendarDatePicker2WithActionButtonsConfig
       dayTextStylePredicate:
           dayTextStylePredicate ?? this.dayTextStylePredicate,
       dayBuilder: dayBuilder ?? this.dayBuilder,
+      weekBuilder: weekBuilder ?? this.weekBuilder,
       yearBuilder: yearBuilder ?? this.yearBuilder,
       disableModePicker: disableModePicker ?? this.disableModePicker,
       centerAlignModePicker:

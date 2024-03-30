@@ -1,5 +1,7 @@
 part of '../calendar_date_picker2.dart';
 
+late bool weekNumbers;
+
 /// Displays the days of a given month and allows choosing a day.
 ///
 /// The days are arranged in a rectangular grid with one column for each day of
@@ -35,6 +37,8 @@ class _DayPicker extends StatefulWidget {
 class _DayPickerState extends State<_DayPicker> {
   /// List of [FocusNode]s, one for each day of the month.
   late List<FocusNode> _dayFocusNodes;
+  late String weekNumberLabel;
+  late int? firstDayOfWeek;
 
   @override
   void initState() {
@@ -46,6 +50,9 @@ class _DayPickerState extends State<_DayPicker> {
       (int index) =>
           FocusNode(skipTraversal: true, debugLabel: 'Day ${index + 1}'),
     );
+    weekNumbers = widget.config.weekNumbers ?? false;
+    weekNumberLabel = widget.config.weekNumberLabel ?? '';
+    firstDayOfWeek = weekNumbers ? 1 : widget.config.firstDayOfWeek;
   }
 
   @override
@@ -88,25 +95,32 @@ class _DayPickerState extends State<_DayPicker> {
   List<Widget> _dayHeaders(
       TextStyle? headerStyle, MaterialLocalizations localizations) {
     final List<Widget> result = <Widget>[];
+    if (weekNumbers) {
+      result.add(headerWidget(weekNumberLabel, headerStyle));
+    }
     final weekdays =
         widget.config.weekdayLabels ?? localizations.narrowWeekdays;
     final firstDayOfWeek =
-        widget.config.firstDayOfWeek ?? localizations.firstDayOfWeekIndex;
+        this.firstDayOfWeek ?? localizations.firstDayOfWeekIndex;
     assert(firstDayOfWeek >= 0 && firstDayOfWeek <= 6,
         'firstDayOfWeek must between 0 and 6');
     for (int i = firstDayOfWeek; true; i = (i + 1) % 7) {
       final String weekday = weekdays[i];
-      result.add(ExcludeSemantics(
-        child: Center(
-          child: Text(
-            weekday,
-            style: widget.config.weekdayLabelTextStyle ?? headerStyle,
-          ),
-        ),
-      ));
+      result.add(headerWidget(weekday, headerStyle));
       if (i == (firstDayOfWeek - 1) % 7) break;
     }
     return result;
+  }
+
+  ExcludeSemantics headerWidget(String label, TextStyle? headerStyle) {
+    return ExcludeSemantics(
+      child: Center(
+        child: Text(
+          label,
+          style: widget.config.weekdayLabelTextStyle ?? headerStyle,
+        ),
+      ),
+    );
   }
 
   @override
@@ -119,6 +133,8 @@ class _DayPickerState extends State<_DayPicker> {
       color: colorScheme.onSurface.withOpacity(0.60),
     );
     final TextStyle dayStyle = textTheme.bodySmall!;
+    final TextStyle weekStyle = textTheme.bodyMedium!;
+    final Color weekColor = colorScheme.onSurface.withOpacity(1.0);
     final Color enabledDayColor = colorScheme.onSurface.withOpacity(0.87);
     final Color disabledDayColor = colorScheme.onSurface.withOpacity(0.38);
     final Color selectedDayColor = colorScheme.onPrimary;
@@ -130,13 +146,34 @@ class _DayPickerState extends State<_DayPicker> {
 
     final int daysInMonth = DateUtils.getDaysInMonth(year, month);
     final int dayOffset = getMonthFirstDayOffset(year, month,
-        widget.config.firstDayOfWeek ?? localizations.firstDayOfWeekIndex);
+        firstDayOfWeek ?? localizations.firstDayOfWeekIndex);
 
     final List<Widget> dayItems = _dayHeaders(headerStyle, localizations);
     // 1-based day of month, e.g. 1-31 for January, and 1-29 for February on
     // a leap year.
     int day = -dayOffset;
     while (day < daysInMonth) {
+      BoxDecoration? decoration;
+      if (weekNumbers) {
+        final pos = (day + dayOffset);
+        if (pos % 7 == 0) {
+          var weekToBuild = DateTime(year, month, pos + 1);
+          var weekOfYear = weekToBuild.weekOfYear;
+          final weekTextStyle = widget.config.weekNumberTextStyle ?? weekStyle.apply(color: weekColor);
+          Widget weekWidget = widget.config.weekBuilder?.call(
+                date: weekToBuild,
+                textStyle: weekTextStyle,
+                decoration: decoration,
+              ) ??
+              _buildDefaultWeekWidgetContent(
+                decoration,
+                localizations,
+                weekOfYear,
+                weekTextStyle,
+              );
+          dayItems.add(weekWidget);
+        }
+      }
       day++;
       if (day < 1) {
         dayItems.add(Container());
@@ -151,7 +188,6 @@ class _DayPickerState extends State<_DayPicker> {
         final bool isToday =
             DateUtils.isSameDay(widget.config.currentDate, dayToBuild);
 
-        BoxDecoration? decoration;
         Color dayColor = enabledDayColor;
         if (isSelectedDay) {
           // The selected day gets a circle background highlight, and a
@@ -370,6 +406,32 @@ class _DayPickerState extends State<_DayPicker> {
       ],
     );
   }
+
+  Widget _buildDefaultWeekWidgetContent(
+    BoxDecoration? decoration,
+    MaterialLocalizations localizations,
+    int week,
+    TextStyle weekTextStyle,
+  ) {
+    return Row(
+      children: [
+        const Spacer(),
+        AspectRatio(
+          aspectRatio: 1,
+          child: Container(
+            decoration: decoration,
+            child: Center(
+              child: Text(
+                localizations.formatDecimal(week),
+                style: weekTextStyle,
+              ),
+            ),
+          ),
+        ),
+        const Spacer(),
+      ],
+    );
+  }
 }
 
 class _DayPickerGridDelegate extends SliverGridDelegate {
@@ -377,7 +439,7 @@ class _DayPickerGridDelegate extends SliverGridDelegate {
 
   @override
   SliverGridLayout getLayout(SliverConstraints constraints) {
-    const int columnCount = DateTime.daysPerWeek;
+    int columnCount = DateTime.daysPerWeek + (weekNumbers ? 1 : 0);
     final double tileWidth = constraints.crossAxisExtent / columnCount;
     final double tileHeight = math.min(
       _dayPickerRowHeight,
