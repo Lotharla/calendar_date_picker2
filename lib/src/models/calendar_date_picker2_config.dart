@@ -372,6 +372,7 @@ class CalendarDatePicker2WithActionButtonsConfig
           selectableDayPredicate: selectableDayPredicate,
           dayTextStylePredicate: dayTextStylePredicate,
           dayBuilder: dayBuilder,
+          weekBuilder: weekBuilder,
           yearBuilder: yearBuilder,
           disableModePicker: disableModePicker,
           centerAlignModePicker: centerAlignModePicker,
